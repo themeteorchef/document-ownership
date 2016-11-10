@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import Documents from './documents';
@@ -11,7 +12,9 @@ export const upsertDocument = new ValidatedMethod({
     body: { type: String, optional: true },
   }).validator(),
   run(document) {
-    return Documents.upsert({ _id: document._id }, { $set: document });
+    const documentToInsert = document;
+    documentToInsert.owner = this.userId;
+    return Documents.upsert({ _id: document._id }, { $set: documentToInsert });
   },
 });
 
@@ -21,7 +24,12 @@ export const removeDocument = new ValidatedMethod({
     _id: { type: String },
   }).validator(),
   run({ _id }) {
-    Documents.remove(_id);
+    const documentToDelete = Documents.findOne(_id, { fields: { owner: 1 } });
+    if (documentToDelete && documentToDelete.owner === this.userId) {
+      Documents.remove(_id);
+    } else {
+      throw new Meteor.Error('500', 'Sorry, guppie. That\'s not for you to delete!');
+    }
   },
 });
 

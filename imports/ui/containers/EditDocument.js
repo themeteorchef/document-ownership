@@ -8,7 +8,8 @@ const composer = ({ params }, onData) => {
   const subscription = Meteor.subscribe('documents.view', params._id);
 
   if (subscription.ready()) {
-    const doc = Documents.findOne();
+    const owner = Meteor.userId();
+    const doc = owner ? Documents.findOne({ _id: params._id, owner }) : {};
     onData(null, { doc });
   }
 };

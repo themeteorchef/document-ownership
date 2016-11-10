@@ -1,5 +1,5 @@
 import React from 'react';
-import { ButtonToolbar, ButtonGroup, Button } from 'react-bootstrap';
+import { ButtonToolbar, ButtonGroup, Button, Alert } from 'react-bootstrap';
 import { browserHistory } from 'react-router';
 import { Bert } from 'meteor/themeteorchef:bert';
 import { removeDocument } from '../../api/documents/methods.js';
@@ -17,8 +17,8 @@ const handleRemove = (_id) => {
   }
 };
 
-const ViewDocument = ({ doc }) => (
-  <div className="ViewDocument">
+const renderDocument = (doc) => {
+  return doc ? (<div>
     <div className="page-header clearfix">
       <h4 className="pull-left">{ doc.title }</h4>
       <ButtonToolbar className="pull-right">
@@ -29,6 +29,12 @@ const ViewDocument = ({ doc }) => (
       </ButtonToolbar>
     </div>
     { doc.body }
+  </div>) : <Alert bsStyle="warning">Well, fudge. We couldn't find that document!</Alert>;
+};
+
+const ViewDocument = ({ doc }) => (
+  <div className="ViewDocument">
+    { renderDocument(doc) }
   </div>
 );
 

@@ -7,7 +7,9 @@ const DocumentsList = ({ documents }) => (
       <ListGroupItem key={ _id } href={`/documents/${_id}`}>{ title }</ListGroupItem>
     ))}
   </ListGroup> :
-  <Alert bsStyle="warning">No documents yet.</Alert>
+  <Alert bsStyle="warning">
+    You don't have any documents yet! <a href="/documents/new">Add one</a>?
+  </Alert>
 );
 
 DocumentsList.propTypes = {
